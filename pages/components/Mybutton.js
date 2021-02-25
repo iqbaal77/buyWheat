@@ -16,7 +16,9 @@ const Mybutton = (props) => {
         padding: 10,
         marginTop: 16,
         marginLeft: 35,
-        marginRight: 35}}
+        marginRight: 35,
+        borderRadius: 50,
+      }}
       onPress={props.customClick}>
       <Text style={styles.text}>{props.title}</Text>
     </TouchableOpacity>

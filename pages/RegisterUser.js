@@ -60,14 +60,14 @@ const RegisterUser = ({navigation}) => {
   useEffect(() => {
     setPerBag(0);
     setTotalKilo(grandTotal.totalKilo);
-    setRemainingWeight(grandTotal.remainingWeight?.toFixed(3));
+    setRemainingWeight((+grandTotal.remainingWeight).toFixed(3));
     setPerBagWeight(grandTotal.perBagWeight || 1);
     const {toMn, toKg} = getManFromKg(grandTotal.remainingWeight);
     setTotalMun(toMn);
     setTotalKiloOfMn(toKg);
     setTotalAmount(grandTotal.totalAmount);
   }, [grandTotal]);
-  const register_user = () => {
+  const userAction = (val) => {
     setAddDisabled(true);
     setPerBagWeightFlag(true);
     if (!perBag) {
@@ -94,9 +94,15 @@ const RegisterUser = ({navigation}) => {
       totalAmount,
     };
     if (editFlag) {
-      const allRecords = list.map((item) =>
-        Object.assign({}, item, item.id === selectedItem.id ? obj : item),
+      const deleteFlag = val === 'delete';
+      let allRecords = list.map((item, index) =>
+        deleteFlag
+          ? item.id === selectedItem.id
+            ? list.splice(index, 1)[0]
+            : item
+          : Object.assign({}, item, item.id === selectedItem.id ? obj : item),
       );
+      allRecords = deleteFlag ? list : allRecords;
       setList(allRecords);
       setEditFlag(false);
       const result = allRecords.reduce((sum, currentVal) => {
@@ -106,7 +112,7 @@ const RegisterUser = ({navigation}) => {
           remainingWeight: +currentVal.remainingWeight + +sum.remainingWeight,
           totalMun: currentVal.totalMun + sum.totalMun,
           totalKiloOfMn: +currentVal.totalKiloOfMn + +sum.totalKiloOfMn,
-          totalAmount: currentVal.totalAmount + sum.totalAmount
+          totalAmount: currentVal.totalAmount + sum.totalAmount,
         };
       });
       setGrandTotal((prev) => ({
@@ -114,7 +120,7 @@ const RegisterUser = ({navigation}) => {
         ...result,
       }));
     } else {
-      setList([obj, ...list]);
+      setList([...list, obj]);
       setGrandTotal((prev) => ({
         ...prev,
         totalKilo: prev.totalKilo + totalKilo,
@@ -122,7 +128,7 @@ const RegisterUser = ({navigation}) => {
         remainingWeight: +remainingWeight + +prev.remainingWeight,
         totalMun: totalMun + prev.totalMun,
         totalKiloOfMn: +totalKiloOfMn + +prev.totalKiloOfMn,
-        totalAmount: totalAmount + prev.totalAmount
+        totalAmount: totalAmount + prev.totalAmount,
       }));
     }
   };
@@ -206,6 +212,31 @@ const RegisterUser = ({navigation}) => {
       />
     </>
   );
+  const btnsElement = (
+    <>
+      {editFlag ? (
+        <>
+          <Mybutton
+            disabled={addDisabled}
+            title="Delete"
+            customClick={() => userAction('delete')}
+          />
+          <Mybutton
+            disabled={addDisabled}
+            title={'Edit'}
+            customClick={userAction}
+          />
+        </>
+      ) : (
+        <Mybutton
+          disabled={addDisabled}
+          title={'Add'}
+          customClick={userAction}
+        />
+      )}
+    </>
+  );
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -214,10 +245,10 @@ const RegisterUser = ({navigation}) => {
             <KeyboardAvoidingView
               behavior="padding"
               style={{flex: 1, justifyContent: 'space-between'}}>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+              <View style={{flexDirection: 'row'}}>
                 <Picker
                   selectedValue={selectedItem}
-                  style={{height: 50, width: 335, marginRight: 0}}
+                  style={{height: 50, width: 300}}
                   onValueChange={(itemValue, itemIndex) =>
                     onDropdownSelect(itemValue)
                   }>
@@ -244,22 +275,11 @@ const RegisterUser = ({navigation}) => {
                   thumbColor={isEnabled ? '#f4511e' : '#f4f3f4'}
                   ios_backgroundColor="#3e3e3e"
                   onValueChange={toggleSwitch}
-                  style={{marginLeft: 0}}
+                  style={{margin: 0, padding: 0}}
                   value={isEnabled}
                 />
               </View>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                <Mybutton
-                  disabled={addDisabled}
-                  title={editFlag ? 'Edit' : 'Add'}
-                  customClick={register_user}
-                />
-                <Mybutton
-                  disabled={addDisabled}
-                  title={editFlag ? 'Edit' : 'Add'}
-                  customClick={register_user}
-                />
-              </View>
+              {btnsElement}
               {isEnabled ? (
                 <>
                   <Mytext text="ٹوٹل توڑوں کی تعداد:" />
@@ -301,11 +321,7 @@ const RegisterUser = ({navigation}) => {
               />
               <Mytext text="ٹوٹل قیمت:" />
               <Mytext text={totalAmount.toFixed(1) + '  -/ Rs'} />
-              <Mybutton
-                disabled={addDisabled}
-                title={editFlag ? 'Edit' : 'Add'}
-                customClick={register_user}
-              />
+              {btnsElement}
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
