@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "765814961823",
+    "project_id": "wheatcalculator",
+    "storage_bucket": "wheatcalculator.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:765814961823:android:fa657215e8a102662314aa",
+        "android_client_info": {
+          "package_name": "com.calculator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "765814961823-oae6pe4m98k10cbvdf5vv4lcl4o3aalv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3Myfl9B-bNEyCFf8LdscPyAM5LBm7gsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "765814961823-oae6pe4m98k10cbvdf5vv4lcl4o3aalv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
