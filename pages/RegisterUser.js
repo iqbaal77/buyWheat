@@ -19,17 +19,34 @@ import {getUniqId} from './utilities/utils';
 // Connction to access the pre-populated user_db.db
 import firestore from '@react-native-firebase/firestore';
 
+
+firestore()
+  .settings({persistence: true})
+  .then((r) => console.log(r));
 // firestore()
 //   .collection('Users')
-//   .add({
-//     name: 'Ada Lovelace',
-//     age: 30,
+//   .get()
+//   .then((snapshot) => {
+//   console.log('test', snapshot.docs.map(doc => doc.data()));
+// })
+
+// firestore()
+//   .collection('Users')
+//   .doc('wQOMbaUkEgTD7MF8foBo')
+//   .update({
+//     name: 'empty',
 //   })
 //   .then(() => {
 //     console.log('User added!');
 //   });
-// console.log('test');
-
+// firestore()
+//   .collection('Users')
+//   .add({
+//     name: 'empty',
+//   })
+//   .then(() => {
+//     console.log('User added!');
+//   });
 const RegisterUser = ({navigation}) => {
   const [totalBagCount, setTotalBagCount] = useState(0);
   const [perBag, setPerBag] = useState(0);

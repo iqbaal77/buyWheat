@@ -49,7 +49,7 @@ const HomeScreen = ({navigation}) => {
           />
           <Mybutton
             title="View All"
-            //  customClick={() => navigation.navigate('ViewAll')}
+            customClick={() => navigation.navigate('ViewAll')}
           />
           <Mybutton
             title="Delete"
