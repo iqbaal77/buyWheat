@@ -2,62 +2,112 @@
 // https://aboutreact.com/example-of-pre-populated-sqlite-database-in-react-native
 // Screen to view single user
 
-import React, {useState} from 'react';
-import {Text, View, SafeAreaView} from 'react-native';
-import Mytextinput from './components/Mytextinput';
-import Mybutton from './components/Mybutton';
-import {openDatabase} from 'react-native-sqlite-storage';
-
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, ScrollView, Text, View} from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import DataTable from './components/Table';
 // Connction to access the pre-populated user_db.db
-const db = openDatabase({name: 'user_db.db', createFromLocation: 1});
-
-const ViewUser = () => {
+const ViewUser = ({route}) => {
   let [inputUserId, setInputUserId] = useState('');
-  let [userData, setUserData] = useState({});
+  let [listItems, setListItems] = useState([]);
 
-  let searchUser = () => {
-    console.log(inputUserId);
-    setUserData({});
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM tbl_user where user_id = ?',
-        [inputUserId],
-        (tx, results) => {
-          var len = results.rows.length;
-          console.log('len', len);
-          if (len > 0) {
-            setUserData(results.rows.item(0));
-          } else {
-            alert('No user found');
-          }
-        },
-      );
-    });
+  // let searchUser = () => {
+  //   console.log(inputUserId);
+  //   setUserData({});
+  //   db.transaction((tx) => {
+  //     tx.executeSql(
+  //       'SELECT * FROM tbl_user where user_id = ?',
+  //       [inputUserId],
+  //       (tx, results) => {
+  //         var len = results.rows.length;
+  //         console.log('len', len);
+  //         if (len > 0) {
+  //           setUserData(results.rows.item(0));
+  //         } else {
+  //           alert('No user found');
+  //         }
+  //       },
+  //     );
+  //   });
+  // };
+  const getConvertedDate = (unixTimestamp) => {
+    const milliseconds = unixTimestamp * 1000; // 1575909015000
+    const dateObject = new Date(milliseconds);
+    return `Date: ${dateObject.toLocaleString('en-US', {weekday: 'long'})}- 
+      ${dateObject.toLocaleString('en-US', {month: 'long'})}-
+${dateObject.toLocaleString('en-US', {day: 'numeric'})},
+${dateObject.toLocaleString('en-US', {year: 'numeric'})},
+${dateObject.toLocaleString('en-US', {hour: 'numeric'})}:
+${dateObject.toLocaleString('en-US', {minute: 'numeric'})}:
+${dateObject.toLocaleString('en-US', {second: 'numeric'})}`;
+    //dateObject.toLocaleString('en-US', {timeZoneName: 'short'}); // 12/9/2019, 10:30:15 AM CST
   };
+  useEffect(() => {
+    console.log(listItems);
+  }, [listItems]);
+  useEffect(() => {
+    firestore()
+      .collection('WheatRecords')
+      .where('userId', '==', route?.params?.id)
+      .get()
+      .then((snapshot) => {
+        setListItems(
+          snapshot.docs.map((doc) => {
+            let data = doc.data();
+            let {singleRecords: singleArr} = doc.data();
+            console.log(singleArr);
+            if (!singleArr.totalBagCount) {
+              data.singleRecordsArr = singleArr.map((single, index) => {
+                return [
+                  index + 1,
+                  single.perBag,
+                  single.perBagWeight,
+                  single.remainingWeight,
+                  `${single.totalMun}\n${single.totalKiloOfMn}`,
+                  single.wheatRate,
+                  single.totalAmount,
+                ];
+              });
+            }
 
+            let {grandTotalObj: total} = doc.data();
+            if (!singleArr.totalBagCount) {
+              data.singleRecordsArr.push([
+                total.totalBags,
+                total.totalKilo,
+                total.perBagWeight,
+                total.remainingWeight,
+                `${total.totalMun}\n${total.totalKiloOfMn}`,
+                '',
+                total.totalAmount,
+              ]);
+            } else {
+              let {grandTotalObj: obj} = doc.data();
+
+              data.singleRecordsArr = [];
+              data.singleRecordsArr.push([
+                total.totalBags,
+                obj.totalKilo,
+                obj.perBagWeight,
+                obj.remainingWeight,
+                `${obj.totalMun}\n${obj.totalKiloOfMn}`,
+                '',
+                obj.totalAmount,
+              ]);
+            }
+            return data;
+          }),
+        );
+      });
+  }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
-        <View style={{flex: 1}}>
-          <Mytextinput
-            placeholder="Enter User Id"
-            onChangeText={(inputUserId) => setInputUserId(inputUserId)}
-            style={{padding: 10}}
-          />
-          <Mybutton title="Search User" customClick={searchUser} />
-          <View style={{marginLeft: 35, marginRight: 35, marginTop: 10}}>
-            <Text>User Id: {userData.user_id}</Text>
-            <Text>User Name: {userData.user_name}</Text>
-            <Text>User Contact: {userData.user_contact}</Text>
-            <Text>User Address: {userData.user_address}</Text>
-          </View>
-        </View>
-        <Text style={{fontSize: 18, textAlign: 'center', color: 'grey'}}>
-          Pre-Populated SQLite Database in React Native
-        </Text>
-        <Text style={{fontSize: 16, textAlign: 'center', color: 'grey'}}>
-          www.aboutreact.com
-        </Text>
+        <ScrollView>
+          {listItems?.map((item) => (
+            <DataTable key={item.createdAt._nanoseconds} data={item.singleRecordsArr} />
+          ))}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
