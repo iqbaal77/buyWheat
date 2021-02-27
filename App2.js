@@ -8,7 +8,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeScreen from './pages/HomeScreen';
-import RegisterUser from './pages/RegisterUser';
+import Calculator from './pages/Calculator';
 import UpdateUser from './pages/UpdateUser';
 import ViewUser from './pages/ViewUser';
 import ViewAllUser from './pages/ViewAllUser';
@@ -78,7 +78,7 @@ const App = () => {
         />
         <Stack.Screen
           name="Register"
-          component={RegisterUser}
+          component={Calculator}
           options={{
             title: 'Register User', //Set Header Title
             headerStyle: {

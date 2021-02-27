@@ -8,11 +8,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import HomeScreen from './pages/HomeScreen';
-import RegisterUser from './pages/RegisterUser';
+import Calculator from './pages/Calculator';
 import UpdateUser from './pages/UpdateUser';
 import ViewUser from './pages/ViewUser';
 import ViewAllUser from './pages/ViewAllUser';
 import DeleteUser from './pages/DeleteUser';
+import RegisterUser from './pages/RegisterUser';
 
 const Stack = createStackNavigator();
 
@@ -77,10 +78,24 @@ const App = () => {
           }}
         />
         <Stack.Screen
+          name="Calculator"
+          component={Calculator}
+          options={{
+            title: '                         گندم کیلکولیٹر', //Set Header Title
+            headerStyle: {
+              backgroundColor: '#f4511e', //Set Header color
+            },
+            headerTintColor: '#fff', //Set Header text color
+            headerTitleStyle: {
+              fontWeight: 'bold', //Set Header text style
+            },
+          }}
+        />
+        <Stack.Screen
           name="Register"
           component={RegisterUser}
           options={{
-            title: '                         گندم کیلکولیٹر', //Set Header Title
+            title: 'Register User', //Set Header Title
             headerStyle: {
               backgroundColor: '#f4511e', //Set Header color
             },

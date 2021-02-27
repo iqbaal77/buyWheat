@@ -19,16 +19,8 @@ import {getUniqId} from './utilities/utils';
 // Connction to access the pre-populated user_db.db
 import firestore from '@react-native-firebase/firestore';
 
-
 firestore()
-  .settings({persistence: true})
-  .then((r) => console.log(r));
-// firestore()
-//   .collection('Users')
-//   .get()
-//   .then((snapshot) => {
-//   console.log('test', snapshot.docs.map(doc => doc.data()));
-// })
+  .settings({persistence: true});
 
 // firestore()
 //   .collection('Users')
@@ -39,15 +31,16 @@ firestore()
 //   .then(() => {
 //     console.log('User added!');
 //   });
-// firestore()
-//   .collection('Users')
-//   .add({
-//     name: 'empty',
-//   })
-//   .then(() => {
-//     console.log('User added!');
-//   });
-const RegisterUser = ({navigation}) => {
+
+const Calculator = ({route}) => {
+  const allCountObj = {
+    totalKilo: 0,
+    perBagWeight: 0,
+    remainingWeight: 0,
+    totalMun: 0,
+    totalKiloOfMn: 0,
+    totalAmount: 0,
+  };
   const [totalBagCount, setTotalBagCount] = useState(0);
   const [perBag, setPerBag] = useState(0);
   const [totalKilo, setTotalKilo] = useState(0);
@@ -61,17 +54,10 @@ const RegisterUser = ({navigation}) => {
   const [list, setList] = useState([]);
   const [addDisabled, setAddDisabled] = useState(true);
   const [perBagWeightFlag, setPerBagWeightFlag] = useState(true);
-  const [grandTotal, setGrandTotal] = useState({
-    totalKilo: 0,
-    perBagWeight: 0,
-    remainingWeight: 0,
-    totalMun: 0,
-    totalKiloOfMn: 0,
-    totalAmount: 0,
-  });
+  const [grandTotal, setGrandTotal] = useState(allCountObj);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-  const [wholeRecord, saveWholeRecord] = useState({});
+  const [wholeRecord, saveWholeRecord] = useState(allCountObj);
   const [selectedItem, setSelectedItem] = useState('');
   const [editFlag, setEditFlag] = useState(false);
   useEffect(() => {
@@ -218,6 +204,32 @@ const RegisterUser = ({navigation}) => {
     perBagFn(selectedVal.perBag);
     setEditFlag(true);
   };
+  const saveAll = () => {
+    const grandTotalObj = {
+      totalKilo,
+      remainingWeight,
+      perBagWeight,
+      totalMun,
+      totalKiloOfMn,
+      totalAmount,
+      totalBags: totalBagCount || list.length,
+    };
+    saveWholeRecord(grandTotalObj);
+    firestore()
+      .collection('WheatRecords')
+      .add({
+        userId: route.params.id,
+        singleRecords: isEnabled ? {totalBagCount: 'enabled'} : list,
+        grandTotalObj,
+        createdAt: firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        alert('Records added!');
+      })
+      .catch(() => {
+        alert('Records adding failed!');
+      });
+  };
   const bagCountElement = (
     <>
       <Mytext text="فئ تو ڑاگندم وزن:" />
@@ -338,7 +350,12 @@ const RegisterUser = ({navigation}) => {
               />
               <Mytext text="ٹوٹل قیمت:" />
               <Mytext text={totalAmount.toFixed(1) + '  -/ Rs'} />
-              {btnsElement}
+
+              <Mybutton
+                disabled={!route?.params?.id}
+                title="Save All"
+                customClick={saveAll}
+              />
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
@@ -353,4 +370,4 @@ const RegisterUser = ({navigation}) => {
   );
 };
 
-export default RegisterUser;
+export default Calculator;

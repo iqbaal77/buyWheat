@@ -2,64 +2,93 @@
 // https://aboutreact.com/example-of-pre-populated-sqlite-database-in-react-native
 // Screen to view all the user*/
 
-import React, {useState, useEffect} from 'react';
-import {FlatList, Text, View, SafeAreaView} from 'react-native';
-import {openDatabase} from 'react-native-sqlite-storage';
-
+import React, { useState, useEffect } from 'react';
+import {
+  FlatList,
+  Text,
+  View,
+  SafeAreaView,
+  TouchableHighlight,
+  StyleSheet,
+} from 'react-native';
 // Connction to access the pre-populated user_db.db
-let db = openDatabase({name: 'user_db.db', createFromLocation: 1});
+import firestore from '@react-native-firebase/firestore';
 
-const ViewAllUser = () => {
+const ViewAllUser = ({ navigation }) => {
   let [flatListItems, setFlatListItems] = useState([]);
 
   useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM tbl_user', [], (tx, results) => {
-        var temp = [];
-        for (let i = 0; i < results.rows.length; ++i)
-          temp.push(results.rows.item(i));
-        setFlatListItems(temp);
+    firestore()
+      .collection('Users')
+      .get()
+      .then((snapshot) => {
+        setFlatListItems(
+          snapshot.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() };
+          }),
+        );
       });
-    });
   }, []);
 
   let listViewItemSeparator = () => {
     return (
-      <View style={{height: 0.2, width: '100%', backgroundColor: '#808080'}} />
+      <View
+        style={{
+          height: 2,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          marginLeft: 10,
+          marginRight: 10,
+        }}
+      />
     );
   };
-
-  let listItemView = (item) => {
+  const onPress = (id) => {
+    navigation.navigate('Calculator', {id})
+  };
+  let listItemView = (item, separators) => {
     return (
-      <View key={item.user_id} style={{backgroundColor: 'white', padding: 20}}>
-        <Text>Id: {item.user_id}</Text>
-        <Text>Name: {item.user_name}</Text>
-        <Text>Contact: {item.user_contact}</Text>
-        <Text>Address: {item.user_address}</Text>
-      </View>
+      <TouchableHighlight
+        style={styles.container}
+        onPress={() => onPress(item.id)}
+        onShowUnderlay={separators.highlight}
+        onHideUnderlay={separators.unhighlight}
+        key={item.id}
+      >
+        <View style={{ backgroundColor: 'white', padding: 20 }}>
+          <Text>Id: {item.id}</Text>
+          <Text>Name: {item.name}</Text>
+          <Text>Contact: {item.contact}</Text>
+          <Text>Address: {item.address}</Text>
+        </View>
+      </TouchableHighlight>
     );
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1}}>
-        <View style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
           <FlatList
             data={flatListItems}
             ItemSeparatorComponent={listViewItemSeparator}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => listItemView(item)}
+            renderItem={({ item, separators }) => listItemView(item, separators)}
           />
         </View>
-        <Text style={{fontSize: 18, textAlign: 'center', color: 'grey'}}>
-          Pre-Populated SQLite Database in React Native
-        </Text>
-        <Text style={{fontSize: 16, textAlign: 'center', color: 'grey'}}>
-          www.aboutreact.com
-        </Text>
       </View>
     </SafeAreaView>
   );
 };
 
 export default ViewAllUser;
+const styles = StyleSheet.create({
+  container: {
+    margin: 10,
+    backgroundColor: '#FFF',
+    borderRadius: 6,
+  },
+  image: {
+    height: '100%',
+    borderRadius: 4,
+  },
+});

@@ -37,6 +37,10 @@ const HomeScreen = ({navigation}) => {
           <Mytext text="Pre-Populated SQLite Database in React Native" />
           <Mybutton
             title="Calculator"
+            customClick={() => navigation.navigate('Calculator')}
+          />
+          <Mybutton
+            title="Register"
             customClick={() => navigation.navigate('Register')}
           />
           <Mybutton
