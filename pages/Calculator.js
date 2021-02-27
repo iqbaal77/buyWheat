@@ -40,6 +40,7 @@ const Calculator = ({route}) => {
     totalMun: 0,
     totalKiloOfMn: 0,
     totalAmount: 0,
+    wheatRate: 0,
   };
   const [totalBagCount, setTotalBagCount] = useState(0);
   const [perBag, setPerBag] = useState(0);
@@ -73,18 +74,6 @@ const Calculator = ({route}) => {
   const userAction = (val) => {
     setAddDisabled(true);
     setPerBagWeightFlag(true);
-    if (!perBag) {
-      alert('فی توڑا گندم خالی ہے');
-      return;
-    }
-    if (!perBagWeight) {
-      alert('Please fill per bag weight');
-      return;
-    }
-    if (!wheatRate) {
-      alert('Please fill wheat rate');
-      return;
-    }
     const obj = {
       id: getUniqId(),
       perBag,
@@ -116,6 +105,7 @@ const Calculator = ({route}) => {
           totalMun: currentVal.totalMun + sum.totalMun,
           totalKiloOfMn: +currentVal.totalKiloOfMn + +sum.totalKiloOfMn,
           totalAmount: currentVal.totalAmount + sum.totalAmount,
+          wheatRate: wheatRate,
         };
       });
       setGrandTotal((prev) => ({
@@ -132,6 +122,7 @@ const Calculator = ({route}) => {
         totalMun: totalMun + prev.totalMun,
         totalKiloOfMn: +totalKiloOfMn + +prev.totalKiloOfMn,
         totalAmount: totalAmount + prev.totalAmount,
+        wheatRate: wheatRate,
       }));
     }
   };

@@ -3,9 +3,10 @@
 // Screen to view single user
 
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, ScrollView, Text, View} from 'react-native';
+import {SafeAreaView, ScrollView, View} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import DataTable from './components/Table';
+import Mytext from './components/Mytext';
 // Connction to access the pre-populated user_db.db
 const ViewUser = ({route}) => {
   let [inputUserId, setInputUserId] = useState('');
@@ -31,15 +32,11 @@ const ViewUser = ({route}) => {
   //   });
   // };
   const getConvertedDate = (unixTimestamp) => {
-    const milliseconds = unixTimestamp * 1000; // 1575909015000
+    const milliseconds = unixTimestamp * 1000;
     const dateObject = new Date(milliseconds);
-    return `Date: ${dateObject.toLocaleString('en-US', {weekday: 'long'})}- 
-      ${dateObject.toLocaleString('en-US', {month: 'long'})}-
-${dateObject.toLocaleString('en-US', {day: 'numeric'})},
-${dateObject.toLocaleString('en-US', {year: 'numeric'})},
-${dateObject.toLocaleString('en-US', {hour: 'numeric'})}:
-${dateObject.toLocaleString('en-US', {minute: 'numeric'})}:
-${dateObject.toLocaleString('en-US', {second: 'numeric'})}`;
+    return dateObject.toLocaleString();
+    // return `${dateObject.toLocaleString('en-US', {weekday: 'long'})}-${dateObject.toLocaleString('en-US', {day: 'numeric'})}-${dateObject.toLocaleString('en-US', {month: 'long'})},${dateObject.toLocaleString('en-US', {year: 'numeric'})}
+    //         ${dateObject.toLocaleString('en-US', {hour: 'numeric'})}:${dateObject.toLocaleString('en-US', {minute: 'numeric'})}:${dateObject.toLocaleString('en-US', {second: 'numeric'})}`;
     //dateObject.toLocaleString('en-US', {timeZoneName: 'short'}); // 12/9/2019, 10:30:15 AM CST
   };
   useEffect(() => {
@@ -78,7 +75,7 @@ ${dateObject.toLocaleString('en-US', {second: 'numeric'})}`;
                 total.perBagWeight,
                 total.remainingWeight,
                 `${total.totalMun}\n${total.totalKiloOfMn}`,
-                '',
+                total.wheatRate,
                 total.totalAmount,
               ]);
             } else {
@@ -91,7 +88,7 @@ ${dateObject.toLocaleString('en-US', {second: 'numeric'})}`;
                 obj.perBagWeight,
                 obj.remainingWeight,
                 `${obj.totalMun}\n${obj.totalKiloOfMn}`,
-                '',
+                total.wheatRate,
                 obj.totalAmount,
               ]);
             }
@@ -104,9 +101,14 @@ ${dateObject.toLocaleString('en-US', {second: 'numeric'})}`;
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
         <ScrollView>
-          {listItems?.map((item) => (
-            <DataTable key={item.createdAt._nanoseconds} data={item.singleRecordsArr} />
-          ))}
+          {listItems?.map((item) => {
+            return (
+              <View key={item.createdAt._seconds}>
+                <Mytext text={getConvertedDate(item.createdAt._seconds)} />
+                <DataTable data={item.singleRecordsArr} />
+              </View>
+            );
+          })}
         </ScrollView>
       </View>
     </SafeAreaView>
