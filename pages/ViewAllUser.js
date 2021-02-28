@@ -9,11 +9,12 @@ import {
   View,
   SafeAreaView,
   TouchableHighlight,
-  StyleSheet, KeyboardAvoidingView,
-} from "react-native";
+  StyleSheet,
+  KeyboardAvoidingView,
+} from 'react-native';
 // Connction to access the pre-populated user_db.db
 import firestore from '@react-native-firebase/firestore';
-import Mybutton from "./components/Mybutton";
+import Mybutton from './components/Mybutton';
 
 const ViewAllUser = ({navigation}) => {
   let [flatListItems, setFlatListItems] = useState([]);
@@ -51,17 +52,32 @@ const ViewAllUser = ({navigation}) => {
   };
   let listItemView = (item, separators) => {
     return (
-      <View key={item.id} style={{ backgroundColor: "white", padding: 20 }}>
+      <View key={item.id} style={{backgroundColor: 'white', padding: 20}}>
         <Text>
           <Text style={styles.fonts}>Id:</Text> {item.id}
         </Text>
-        <Text><Text style={styles.fonts}>Name:</Text> {item.name}</Text>
-        <Text><Text style={styles.fonts}>Contact:</Text> {item.contact}</Text>
-        <Text><Text style={styles.fonts}>Address:</Text> {item.address}</Text>
-        <Text><Text style={styles.fonts}>Date:</Text> {item.createdAt.toDate().toLocaleString()}</Text>
+        <Text>
+          <Text style={styles.fonts}>Name:</Text> {item.name}
+        </Text>
+        <Text>
+          <Text style={styles.fonts}>Contact:</Text> {item.contact}
+        </Text>
+        <Text>
+          <Text style={styles.fonts}>Address:</Text> {item.address}
+        </Text>
+        <Text>
+          <Text style={styles.fonts}>Date:</Text>{' '}
+          {item?.createdAt?.toDate().toLocaleString()}
+        </Text>
         <View style={{flexDirection: 'row'}}>
-        <Mybutton title="Calculator" customClick={() => goCalculate(item.id)} />
-        <Mybutton title="View Record" customClick={() => goViewRecord(item.id)} />
+          <Mybutton
+            title="Calculator"
+            customClick={() => goCalculate(item.id)}
+          />
+          <Mybutton
+            title="View Record"
+            customClick={() => goViewRecord(item.id)}
+          />
         </View>
       </View>
     );
@@ -94,5 +110,5 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 4,
   },
-  fonts:{ fontWeight: 'bold', color: '#f4511e'}
+  fonts: {fontWeight: 'bold', color: '#f4511e'},
 });
