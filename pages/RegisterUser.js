@@ -41,6 +41,7 @@ const RegisterUser = ({navigation}) => {
         name: userName,
         contact: userContact,
         address: userAddress,
+        createdAt: new Date(),
       })
       .then((results) => {
         if (results) {

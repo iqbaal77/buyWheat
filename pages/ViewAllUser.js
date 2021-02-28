@@ -58,6 +58,7 @@ const ViewAllUser = ({navigation}) => {
         <Text><Text style={styles.fonts}>Name:</Text> {item.name}</Text>
         <Text><Text style={styles.fonts}>Contact:</Text> {item.contact}</Text>
         <Text><Text style={styles.fonts}>Address:</Text> {item.address}</Text>
+        <Text><Text style={styles.fonts}>Date:</Text> {item.createdAt.toDate().toLocaleString()}</Text>
         <View style={{flexDirection: 'row'}}>
         <Mybutton title="Calculator" customClick={() => goCalculate(item.id)} />
         <Mybutton title="View Record" customClick={() => goViewRecord(item.id)} />

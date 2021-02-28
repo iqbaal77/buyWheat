@@ -19,9 +19,6 @@ import {getUniqId} from './utilities/utils';
 // Connction to access the pre-populated user_db.db
 import firestore from '@react-native-firebase/firestore';
 
-firestore()
-  .settings({persistence: true});
-
 // firestore()
 //   .collection('Users')
 //   .doc('wQOMbaUkEgTD7MF8foBo')
@@ -204,6 +201,7 @@ const Calculator = ({route}) => {
       totalKiloOfMn,
       totalAmount,
       totalBags: totalBagCount || list.length,
+      wheatRate,
     };
     saveWholeRecord(grandTotalObj);
     firestore()
@@ -212,7 +210,7 @@ const Calculator = ({route}) => {
         userId: route.params.id,
         singleRecords: isEnabled ? {totalBagCount: 'enabled'} : list,
         grandTotalObj,
-        createdAt: firestore.FieldValue.serverTimestamp()
+        createdAt: new Date()
       })
       .then(() => {
         alert('Records added!');

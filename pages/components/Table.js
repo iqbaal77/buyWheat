@@ -7,7 +7,7 @@ export default class DataTable extends Component {
     super(props);
     this.state = {
       tableHead: ['تعداد', 'وزن', 'توڑا', 'باقی', 'من', 'ریٹ', 'قیمت'],
-      widthArr: [40, 40, 40, 70, 60, 50, 70],
+      widthArr: [30, 40, 30, 60, 55, 45, 60],
     };
   }
 

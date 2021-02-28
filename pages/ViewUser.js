@@ -9,28 +9,7 @@ import DataTable from './components/Table';
 import Mytext from './components/Mytext';
 // Connction to access the pre-populated user_db.db
 const ViewUser = ({route}) => {
-  let [inputUserId, setInputUserId] = useState('');
   let [listItems, setListItems] = useState([]);
-
-  // let searchUser = () => {
-  //   console.log(inputUserId);
-  //   setUserData({});
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       'SELECT * FROM tbl_user where user_id = ?',
-  //       [inputUserId],
-  //       (tx, results) => {
-  //         var len = results.rows.length;
-  //         console.log('len', len);
-  //         if (len > 0) {
-  //           setUserData(results.rows.item(0));
-  //         } else {
-  //           alert('No user found');
-  //         }
-  //       },
-  //     );
-  //   });
-  // };
   const getConvertedDate = (unixTimestamp) => {
     const milliseconds = unixTimestamp * 1000;
     const dateObject = new Date(milliseconds);
@@ -60,7 +39,7 @@ const ViewUser = ({route}) => {
                   single.perBag,
                   single.perBagWeight,
                   single.remainingWeight,
-                  `${single.totalMun}\n${single.totalKiloOfMn}`,
+                  `${single.totalMun}/\n${single.totalKiloOfMn}`,
                   single.wheatRate,
                   single.totalAmount,
                 ];
@@ -74,7 +53,7 @@ const ViewUser = ({route}) => {
                 total.totalKilo,
                 total.perBagWeight,
                 total.remainingWeight,
-                `${total.totalMun}\n${total.totalKiloOfMn}`,
+                `${total.totalMun}/\n${total.totalKiloOfMn}`,
                 total.wheatRate,
                 total.totalAmount,
               ]);
@@ -87,8 +66,8 @@ const ViewUser = ({route}) => {
                 obj.totalKilo,
                 obj.perBagWeight,
                 obj.remainingWeight,
-                `${obj.totalMun}\n${obj.totalKiloOfMn}`,
-                total.wheatRate,
+                `${obj.totalMun}/\n${obj.totalKiloOfMn}`,
+                obj.wheatRate,
                 obj.totalAmount,
               ]);
             }
@@ -101,14 +80,15 @@ const ViewUser = ({route}) => {
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}}>
         <ScrollView>
-          {listItems?.map((item) => {
-            return (
-              <View key={item.createdAt._seconds}>
-                <Mytext text={getConvertedDate(item.createdAt._seconds)} />
-                <DataTable data={item.singleRecordsArr} />
-              </View>
-            );
-          })}
+          {listItems &&
+            listItems.map((item) => {
+              return (
+                <View key={item.createdAt.toDate().toLocaleString()}>
+                  <Mytext text={item.createdAt.toDate().toLocaleString('ar-EG')} />
+                  <DataTable data={item.singleRecordsArr} />
+                </View>
+              );
+            })}
         </ScrollView>
       </View>
     </SafeAreaView>
