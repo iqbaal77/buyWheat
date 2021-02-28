@@ -169,11 +169,11 @@ const Calculator = ({route}) => {
   const perBagWeightFn = (val) => {
     setAddDisabled(false);
     setPerBagWeightFlag(false);
-    let setTotalKgs = isEnabled ? perBag * totalBagCount : perBag;
-    setTotalKilo(setTotalKgs);
+    //let setTotalKgs = isEnabled ? perBag * totalBagCount : perBag;
+    // setTotalKilo(setTotalKgs);
     setPerBagWeight(val);
     setPerBagWeightT(val);
-    let remain = (setTotalKgs - val).toFixed(3);
+    let remain = (totalKilo - val).toFixed(3);
     setRemainingWeight(remain);
     const {toMn, toKg} = getManFromKg(remain);
     setTotalKiloOfMn(toKg);
@@ -210,7 +210,7 @@ const Calculator = ({route}) => {
         userId: route.params.id,
         singleRecords: isEnabled ? {totalBagCount: 'enabled'} : list,
         grandTotalObj,
-        createdAt: new Date()
+        createdAt: new Date(),
       })
       .then(() => {
         alert('Records added!');
@@ -247,7 +247,7 @@ const Calculator = ({route}) => {
         </>
       ) : (
         <Mybutton
-          disabled={addDisabled}
+          disabled={addDisabled || isEnabled}
           title={'Add'}
           customClick={userAction}
         />
@@ -348,12 +348,6 @@ const Calculator = ({route}) => {
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
-        <Text style={{fontSize: 18, textAlign: 'center', color: 'grey'}}>
-          حاجی افضل آٹا چکی
-        </Text>
-        <Text style={{fontSize: 16, textAlign: 'center', color: 'grey'}}>
-          دیسی فوڈز
-        </Text>
       </View>
     </SafeAreaView>
   );

@@ -14,6 +14,7 @@ import ViewUser from './pages/ViewUser';
 import ViewAllUser from './pages/ViewAllUser';
 import DeleteUser from './pages/DeleteUser';
 import RegisterUser from './pages/RegisterUser';
+import { Text, View } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -120,6 +121,12 @@ const App = () => {
           }}
         />
       </Stack.Navigator>
+      <Text style={{fontSize: 18, textAlign: 'center', color: 'grey'}}>
+        حاجی افضل آٹا چکی
+      </Text>
+      <Text style={{fontSize: 16, textAlign: 'center', color: 'grey'}}>
+        دیسی فوڈز
+      </Text>
     </NavigationContainer>
   );
 };
