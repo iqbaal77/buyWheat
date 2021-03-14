@@ -8,6 +8,8 @@ target 'calculator' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
+
   target 'calculatorTests' do
     inherit! :complete
     # Pods for testing

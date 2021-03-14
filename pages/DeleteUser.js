@@ -52,12 +52,6 @@ const DeleteUser = ({navigation}) => {
           />
           <Mybutton title="Delete User" customClick={deleteUser} />
         </View>
-        <Text style={{fontSize: 18, textAlign: 'center', color: 'grey'}}>
-          Pre-Populated SQLite Database in React Native
-        </Text>
-        <Text style={{fontSize: 16, textAlign: 'center', color: 'grey'}}>
-          www.aboutreact.com
-        </Text>
       </View>
     </SafeAreaView>
   );

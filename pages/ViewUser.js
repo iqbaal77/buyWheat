@@ -7,9 +7,11 @@ import {SafeAreaView, ScrollView, View} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import DataTable from './components/Table';
 import Mytext from './components/Mytext';
+import Loader from './components/loader';
 // Connction to access the pre-populated user_db.db
 const ViewUser = ({route}) => {
   let [listItems, setListItems] = useState([]);
+  const [loader, setLoader] = useState(false);
   const getConvertedDate = (unixTimestamp) => {
     const milliseconds = unixTimestamp * 1000;
     const dateObject = new Date(milliseconds);
@@ -19,19 +21,17 @@ const ViewUser = ({route}) => {
     //dateObject.toLocaleString('en-US', {timeZoneName: 'short'}); // 12/9/2019, 10:30:15 AM CST
   };
   useEffect(() => {
-    console.log(listItems);
-  }, [listItems]);
-  useEffect(() => {
+    setLoader(true);
     firestore()
       .collection('WheatRecords')
       .where('userId', '==', route?.params?.id)
       .get()
       .then((snapshot) => {
+        setLoader(false);
         setListItems(
           snapshot.docs.map((doc) => {
             let data = doc.data();
             let {singleRecords: singleArr} = doc.data();
-            console.log(singleArr);
             if (!singleArr.totalBagCount) {
               data.singleRecordsArr = singleArr.map((single, index) => {
                 return [
@@ -90,6 +90,7 @@ const ViewUser = ({route}) => {
               );
             })}
         </ScrollView>
+        <Loader visible={loader} />
       </View>
     </SafeAreaView>
   );

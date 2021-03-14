@@ -15,15 +15,20 @@ import {
 // Connction to access the pre-populated user_db.db
 import firestore from '@react-native-firebase/firestore';
 import Mybutton from './components/Mybutton';
+import Loader from './components/loader';
 
 const ViewAllUser = ({navigation}) => {
   let [flatListItems, setFlatListItems] = useState([]);
-
+  const [loader, setLoader] = useState(false);
   useEffect(() => {
+    console.log('true')
+    setLoader(true);
     firestore()
       .collection('Users')
       .get()
       .then((snapshot) => {
+        setLoader(false);
+        console.log('false')
         setFlatListItems(
           snapshot.docs.map((doc) => {
             return {id: doc.id, ...doc.data()};
@@ -94,6 +99,7 @@ const ViewAllUser = ({navigation}) => {
             renderItem={({item, separators}) => listItemView(item, separators)}
           />
         </View>
+        <Loader visible={loader} />
       </View>
     </SafeAreaView>
   );

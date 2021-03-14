@@ -14,7 +14,7 @@ import ViewUser from './pages/ViewUser';
 import ViewAllUser from './pages/ViewAllUser';
 import DeleteUser from './pages/DeleteUser';
 import RegisterUser from './pages/RegisterUser';
-import { Text, View } from "react-native";
+import {Text} from 'react-native';
 
 const Stack = createStackNavigator();
 
